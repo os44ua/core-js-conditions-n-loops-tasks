@@ -310,7 +310,7 @@ function getBalanceIndex(arr) {
 
   for (let i = 0; i < n; i += 1) {
     const right = total - left - arr[i];
-    if (left === right) return i;
+    if (i > 0 && i < n - 1 && left === right) return i;
     left += arr[i];
   }
   return -1;
@@ -555,8 +555,55 @@ function shuffleChar(str, iterations) {
  * 321321   => 322113
  *
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  if (number >= 0 && number <= 9) return number;
+
+  let tmp = number;
+  let len = 0;
+  while (tmp > 0) {
+    tmp = Math.floor(tmp / 10);
+    len += 1;
+  }
+
+  const digits = new Array(len);
+  tmp = number;
+  for (let i = len - 1; i >= 0; i -= 1) {
+    digits[i] = tmp % 10;
+    tmp = Math.floor(tmp / 10);
+  }
+
+  let i = len - 2;
+  while (i >= 0 && !(digits[i] < digits[i + 1])) {
+    i -= 1;
+  }
+  if (i < 0) {
+    return number;
+  }
+
+  let j = len - 1;
+  while (!(digits[j] > digits[i])) {
+    j -= 1;
+  }
+
+  const t = digits[i];
+  digits[i] = digits[j];
+  digits[j] = t;
+
+  let l = i + 1;
+  let r = len - 1;
+  while (l < r) {
+    const tt = digits[l];
+    digits[l] = digits[r];
+    digits[r] = tt;
+    l += 1;
+    r -= 1;
+  }
+
+  let result = 0;
+  for (let k = 0; k < len; k += 1) {
+    result = result * 10 + digits[k];
+  }
+  return result;
 }
 
 module.exports = {
