@@ -489,8 +489,52 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  const n = str.length;
+  if (n === 0 || iterations === 0) return str;
+
+  const E = Math.floor((n + 1) / 2);
+
+  const nextIndex = new Array(n);
+  for (let i = 0; i < n; i += 1) {
+    if (i % 2 === 0) nextIndex[i] = Math.floor(i / 2);
+    else nextIndex[i] = E + Math.floor((i - 1) / 2);
+  }
+
+  const visited = new Array(n);
+  for (let i = 0; i < n; i += 1) visited[i] = false;
+
+  const resChars = new Array(n);
+
+  for (let start = 0; start < n; start += 1) {
+    if (!visited[start]) {
+      let len = 0;
+      let x = start;
+      do {
+        visited[x] = true;
+        x = nextIndex[x];
+        len += 1;
+      } while (x !== start);
+
+      const cyc = new Array(len);
+      x = start;
+      for (let t = 0; t < len; t += 1) {
+        cyc[t] = x;
+        x = nextIndex[x];
+      }
+
+      const k = iterations % len;
+      for (let p = 0; p < len; p += 1) {
+        const from = cyc[p];
+        const to = cyc[(p + k) % len];
+        resChars[to] = str[from];
+      }
+    }
+  }
+
+  let res = '';
+  for (let i = 0; i < n; i += 1) res += resChars[i];
+  return res;
 }
 
 /**
